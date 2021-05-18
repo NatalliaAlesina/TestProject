@@ -18,6 +18,8 @@ public class FilterTest extends BaseTest {
 
     @Test(groups = {"Full"}, description = "Check Filter Results")
 
+    //test trigger
+
     public void checkFilterResults() {
 
         Filter filter = new LogingFilter (new FilterImpl());
