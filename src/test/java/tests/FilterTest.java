@@ -19,6 +19,7 @@ public class FilterTest extends BaseTest {
     @Test(groups = {"Full"}, description = "Check Filter Results")
 
     //test trigger
+    //test trigger2
 
     public void checkFilterResults() {
 
