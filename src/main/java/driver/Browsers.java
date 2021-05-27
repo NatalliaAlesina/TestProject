@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Browsers {
-   //Test
     CHROME("CHROME"),
     FF("FF");
 
