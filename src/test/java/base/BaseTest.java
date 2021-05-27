@@ -1,31 +1,29 @@
 package base;
 
-import org.openqa.selenium.WebDriver;
+import business.logic.base.BaseTestModule;
+import driver.Driver;
+import utils.DriverUtils;
+import utils.PropertiesFileReader;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
-import driver.CustomDriver;
-import po.pages.HomePage;
-
 public class BaseTest {
 
+    protected Injector injector = Guice.createInjector(new BaseTestModule());
+
     @BeforeMethod(alwaysRun = true, description = "Start browser")
-    public void performPreconditions(){
-        openBrowser();
-        openHomePage().closeCookieBanner();
+    public void performPreconditions() {
+        injector.injectMembers(this);
+        Driver.getWebDriver().get().get(PropertiesFileReader.getWebSiteUrl());
+        DriverUtils.waitForPageLoad();
+        DriverUtils.waitForAjax();
     }
 
     @AfterMethod(alwaysRun = true, description = "Stop Browser")
-    public void stopBrowser() {
-        CustomDriver.stopBrowser();
-    }
-
-    public static WebDriver openBrowser() {
-        return CustomDriver.getWebDriverInstance();
-    }
-
-    public HomePage openHomePage() {
-        CustomDriver.getWebDriverInstance().get("https://shop.ee.co.uk/");
-        return new HomePage(CustomDriver.getWebDriverInstance());
+    public void closeBrowser() {
+        Driver.tearDown();
     }
 }

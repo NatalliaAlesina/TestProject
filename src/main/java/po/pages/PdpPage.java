@@ -1,62 +1,52 @@
 package po.pages;
 
-import org.openqa.selenium.WebDriver;
+import utils.DriverUtils;
+import utils.ScreenshotUtils;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import utils.HighlightUtils;
-import utils.ScreenshotUtils;
-
-
-
 
 public class PdpPage extends BasePage {
 
-    @FindBy (xpath = "//div[@class='product-capacity-size margin-top-4 hide-md']//a[@aria-label='256GB']")
+    @FindBy(xpath = "//div[@class='product-capacity-size margin-top-4 hide-md']//a[@aria-label='256GB']")
     private WebElement capacity256DropDown;
-    @FindBy (xpath = "//div[@class='premium-delivery-info__description']//a[@rel='nofollow']")
+    @FindBy(xpath = "//div[@class='premium-delivery-info__description']//a[@rel='nofollow']")
     private WebElement checkPostCodeBox;
-    @FindBy (xpath = "//span[@class='ee-form-control']//input[@type='text']")
+    @FindBy(xpath = "//span[@class='ee-form-control']//input[@type='text']")
     private WebElement enterPostCodeField;
-    @FindBy (css = "span.psCheckerCheckPostCodeIcon.ee-icon-search")
+    @FindBy(css = "span.psCheckerCheckPostCodeIcon.ee-icon-search")
     private WebElement searchButton;
-    @FindBy (xpath = "//div[contains(@class, 'plan-item--best-top')]//span[@data-content-id='upfrontblock-now']")
+    @FindBy(xpath = "//div[contains(@class, 'plan-item--best-top')]//span[@data-content-id='upfrontblock-now']")
     public WebElement upfrontCost;
-    @FindBy (css = "div.ps-checker-message__title.ps-checker-message__title--error")
+    @FindBy(css = "div.ps-checker-message__title.ps-checker-message__title--error")
     public WebElement errorMessage;
-    @FindBy (css = "div.ps-checker-message__title.ps-checker-message__title--success")
+    @FindBy(css = "div.ps-checker-message__title.ps-checker-message__title--success")
     public WebElement successMessage;
-    @FindBy (xpath = "//div[@class='ee-personalized-banner__info']//a[@rel='nofollow']")
+    @FindBy(xpath = "//div[@class='ee-personalized-banner__info']//a[@rel='nofollow']")
     private WebElement loginLink;
-    @FindBy (xpath = "//form[@id='command']//button[@class='btn choose-plan-button    js-hero-plan']")
+    @FindBy(xpath = "//form[@id='command']//button[@class='btn choose-plan-button    js-hero-plan']")
     private WebElement choosePlanButton;
-    @FindBy (xpath = "//label[@class='boxed_radio_label boxed_input_label']//*[text()='Pay as you go']")
+    @FindBy(xpath = "//label[@class='boxed_radio_label boxed_input_label']//*[text()='Pay as you go']")
     private static WebElement payAsYouGoPhonesCheckBox;
-    @FindBy (xpath = "//label[@title='£0-£49.99']//span[@class='checkbox']")
+    @FindBy(xpath = "//label[@title='£0-£49.99']//span[@class='checkbox']")
     private static WebElement upfrontCost1CheckBox;
-    @FindBy (xpath = "//label[@title='MobiWire']//span[@class='checkbox']")
+    @FindBy(xpath = "//label[@title='MobiWire']//span[@class='checkbox']")
     private static WebElement mobiWireCheckBox;
-    @FindBy (xpath = "//label[@title='4GB']//span[@class='checkbox']")
+    @FindBy(xpath = "//label[@title='4GB']//span[@class='checkbox']")
     private static WebElement capacityCheckBox1;
-    @FindBy (xpath = "//ul[@id='show']//*[text()='View MobiWire Kanuna details']")
+    @FindBy(xpath = "//ul[@id='show']//*[text()='View MobiWire Kanuna details']")
     private static WebElement mobiWireKanunaPhoneBox;
-
-    public PdpPage (WebDriver driver) {
-        super(driver);
-    }
 
     public PdpPage select256GbCapacity() {
         waitForElementVisible(capacity256DropDown);
-        HighlightUtils.highlightElement(capacity256DropDown);
         capacity256DropDown.click();
-        waitForPageLoaded();
+        DriverUtils.waitForPageLoad();
         return this;
     }
 
     public PdpPage clickCheckPostCodeBox() {
-        HighlightUtils.highlightElement(checkPostCodeBox);
         checkPostCodeBox.click();
         return this;
     }
@@ -70,7 +60,6 @@ public class PdpPage extends BasePage {
 
     public PdpPage clickSearchButton() {
         waitForElementVisible(searchButton);
-        HighlightUtils.highlightElement(searchButton);
         searchButton.click();
         return this;
     }
@@ -79,7 +68,7 @@ public class PdpPage extends BasePage {
         clickCheckPostCodeBox();
         enterPostCode(postcode);
         clickSearchButton();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver.get(), 10);
         wait.until(ExpectedConditions.or(ExpectedConditions.visibilityOf(errorMessage), ExpectedConditions.visibilityOf(successMessage)));
         ScreenshotUtils.makeScreenshot();
 
@@ -92,11 +81,9 @@ public class PdpPage extends BasePage {
     }
 
     public ExtrassPage openExtrass() {
-        HighlightUtils.highlightElement(choosePlanButton);
         choosePlanButton.click();
-        return new ExtrassPage(driver);
+        return initPage(ExtrassPage.class);
     }
-
 
     public WebElement getUpfrontCost() {
         return upfrontCost;

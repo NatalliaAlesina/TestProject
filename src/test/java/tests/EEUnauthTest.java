@@ -1,47 +1,57 @@
 package tests;
 
+import base.BaseTest;
+import business.logic.IFilterService;
+import business.logic.IMenuService;
+import business.logic.IPdpService;
+import po.pages.PdpPage;
+
+import javax.inject.Inject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import base.BaseTest;
-import driver.CustomDriver;
-import po.pages.GalleryPage;
-import po.pages.HomePage;
-import po.pages.PdpPage;
-
 public class EEUnauthTest extends BaseTest {
 
-    @Test(groups = {"Smoke", "Full"}, description = "Check Shop button and Pay monthly phones menu item displaying")
+    @Inject
+    private IMenuService menuService;
+
+    @Inject
+    private IFilterService filterService;
+
+    @Inject
+    private IPdpService pdpService;
+
+    @Test(groups = { "Smoke", "Full" }, description = "Check Shop button and Pay monthly phones menu item displaying")
     public void checkShopAndPaymMonthlyPhonesDisp() {
-        HomePage menu = new HomePage(CustomDriver.getWebDriverInstance()).openMenu();
-        Assert.assertTrue(menu.getShopButton().isDisplayed(), "No required Shop menu on the page!");
-        Assert.assertTrue(menu.getPhonesButton().isDisplayed(), "No required Pay monthly phones menu item on the page!");
+        menuService.openMenu();
+        Assert.assertTrue(menuService.isShopButtonDisplayed(), "No required Shop menu on the page!");
+        Assert.assertTrue(menuService.isPhoneMenuItemDisplayed(), "No required Pay monthly phones menu item on the page!");
     }
 
-    @Test(groups = {"Full"}, description = "Check filter result")
+    @Test(groups = { "Full" }, description = "Check filter result")
     public void checkFilterResult() {
-        new HomePage (CustomDriver.getWebDriverInstance()).openMenu().openGalleryPage();
-        GalleryPage filter = new GalleryPage (CustomDriver.getWebDriverInstance()).clickGoogleCheckBox().clickAppleCheckBox();
-        Assert.assertTrue(filter.getEEPhone().isDisplayed(), "Filter results are invalid!");
+        filterService.openGalleryPage();
+        filterService.clickGoogleFilter();
+        filterService.clickAppleFilter();
+        Assert.assertTrue(filterService.isEePhoneDisplayed(), "Filter results are invalid!");
     }
 
-
-    @Test(groups = {"Smoke", "Full"}, description = "Check Drop Down results")
+    @Test(groups = { "Smoke", "Full" }, description = "Check Drop Down results")
     public void checkDD() {
-        new HomePage (CustomDriver.getWebDriverInstance()).openMenu().openGalleryPage().openPDPPage();
-        PdpPage dropDown = new PdpPage (CustomDriver.getWebDriverInstance()).select256GbCapacity();
-        System.out.println(dropDown.getUpfrontCost().getText());
-        Assert.assertTrue (dropDown.getUpfrontCost().getText().contains("£50"));
+        menuService.openMenu();
+        pdpService.openPDPPage();
+        pdpService.select256GbCapacity();
+        Assert.assertTrue(pdpService.getUpfrontCost().contains("£50"));
     }
 
     @Test(enabled = false, description = "Check Invalid PostCode", dependsOnMethods = { "checkShopAndPaymMonthlyPhonesDisp" })
     public void checkInvalidPostCode() {
-        Assert.assertTrue(new PdpPage (CustomDriver.getWebDriverInstance()).checkPostCode("AL109BW"), "Invalid post Code is accepted");
+        Assert.assertTrue(new PdpPage().checkPostCode("AL109BW"), "Invalid post Code is accepted");
     }
 
     @Test(enabled = false, description = "Check Valid PostCode", dependsOnMethods = { "checkShopAndPaymMonthlyPhonesDisp" })
     public void checkValidPostCode() {
-        Assert.assertFalse(new PdpPage (CustomDriver.getWebDriverInstance()).checkPostCode("AL109BW"), "Invalid post Code is accepted");
+        Assert.assertFalse(new PdpPage().checkPostCode("AL109BW"), "Invalid post Code is accepted");
     }
 
 }

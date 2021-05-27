@@ -1,12 +1,10 @@
 package po.pages;
 
+import utils.DriverUtils;
+
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-
-import driver.CustomDriver;
-import utils.HighlightUtils;
 
 public class HomePage extends BasePage {
 
@@ -16,16 +14,12 @@ public class HomePage extends BasePage {
     @FindBy(xpath = "//div[@class='pdynamicbutton']//a[@class='call']")
     private WebElement acceptButton;
 
-    public HomePage(WebDriver driver) {
-        super(driver);
-    }
-
     public HomePage closeCookieBanner() {
-        if (CustomDriver.isDisplayed(cookiePolicyFrame)) {
-            driver.switchTo().frame(cookiePolicyFrame);
+        HomePage homePage = initPage(HomePage.class);
+        if (homePage.isDisplayed(cookiePolicyFrame)) {
+            driver.get().switchTo().frame(cookiePolicyFrame);
             waitForElementVisible(acceptButton);
             try {
-                HighlightUtils.highlightElement(acceptButton);
                 if (acceptButton.isDisplayed()) {
                     acceptButton.click();
                     try {
@@ -38,19 +32,24 @@ public class HomePage extends BasePage {
 
             }
         }
-        return new HomePage(driver);
+        return initPage(HomePage.class);
     }
 
     public HomePage openMenu() {
-        HighlightUtils.highlightElement(getShopButton());
-        moveToElement(getShopButton());
+        DriverUtils.moveToElement(getShopButton());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         waitForElementVisible(getPhonesButton());
-        return new HomePage(driver);
+        return initPage(HomePage.class);
     }
 
     public GalleryPage openGalleryPage() {
         getPhonesButton().click();
-        return new GalleryPage(driver);
+        DriverUtils.waitForPageLoad();
+        return initPage(GalleryPage.class);
     }
 
 }

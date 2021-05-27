@@ -1,24 +1,21 @@
 package po.pages;
 
-import driver.CustomDriver;
-import utils.HighlightUtils;
+import driver.Driver;
+import utils.DriverUtils;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 
 public class BasePage {
 
     @FindBy(xpath = "//nav[@id='eed-nav']//*[text()='Shop']")
-    private WebElement shopButton;
+    protected WebElement shopButton;
 
     @FindBy(xpath = "//nav[@id='eed-nav']//*[text()='My Shop']")
     protected WebElement myShopButton;
@@ -29,42 +26,22 @@ public class BasePage {
     @FindBy(xpath = "//nav[@id='eed-nav']//*[text()='All phones']")
     protected WebElement allPhonesButton;
 
-    private static final int WAIT_FOR_ELEMENT_TIMEOUT_SECONDS = 10;
+    private static final int WAIT_FOR_ELEMENT_TIMEOUT_SECONDS = 70;
 
-    public WebDriver driver;
+    protected ThreadLocal<WebDriver> driver = Driver.getWebDriver();
 
-    public BasePage(WebDriver driver) {
-        this.driver = CustomDriver.getWebDriverInstance();
-        PageFactory.initElements(driver, this);
+    protected <T extends BasePage> T initPage(Class<T> clazz) {
+        T page = PageFactory.initElements(driver.get(), clazz);
+        DriverUtils.waitForPageLoad();
+        return page;
     }
 
     public void waitForElementVisible(WebElement element) {
-        new WebDriverWait(driver, WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.visibilityOf(element));
+        new WebDriverWait(driver.get(), WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.visibilityOf(element));
     }
 
     protected void waitForElementEnabled(WebElement element) {
-        new WebDriverWait(driver, WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.elementToBeClickable(element));
-    }
-
-    public void waitForPageLoaded() {
-        ExpectedCondition<Boolean> expectation = new
-                ExpectedCondition<Boolean>() {
-                    public Boolean apply(WebDriver driver) {
-                        return ((JavascriptExecutor) driver).executeScript("return document.readyState").toString().equals("complete");
-                    }
-                };
-        try {
-            Thread.sleep(1000);
-            WebDriverWait wait = new WebDriverWait(driver, 30);
-            wait.until(expectation);
-        } catch (Throwable error) {
-            Assert.fail("Timeout waiting for Page Load Request to complete.");
-        }
-    }
-
-    public void moveToElement(WebElement element) {
-        Actions actions = new Actions(driver);
-        actions.moveToElement(element).perform();
+        new WebDriverWait(driver.get(), WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public WebElement getPhonesButton() {
@@ -82,6 +59,11 @@ public class BasePage {
         } catch (NoSuchElementException e) {
         }
         return isDisplayed;
+    }
+
+    public void moveToElement(WebElement element) {
+        Actions actions = new Actions(driver.get());
+        actions.moveToElement(element).perform();
     }
 }
 

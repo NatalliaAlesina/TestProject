@@ -1,33 +1,33 @@
 package tests;
 
 import base.BaseTest;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import po.pages.FilterPage;
-import business.logic.Filtering;
+import business.logic.imp.Filtering;
 import business.objects.phone.Brand;
 import business.objects.phone.Capacity;
 import business.objects.phone.Cost;
 import business.objects.phone.Filter;
 import business.objects.phone.FilterImpl;
 import business.objects.phone.LogingFilter;
+import po.pages.FilterPage;
+
+import com.google.inject.Inject;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class FilterTest extends BaseTest {
 
-    @Test(groups = {"Full"}, description = "Check Filter Results")
+    @Inject
+    Filtering filtering;
 
-    //test trigger
-    //test trigger2
+    @Test(groups = { "Full" }, description = "Check Filter Results")
 
     public void checkFilterResults() {
 
-        Filter filter = new LogingFilter (new FilterImpl());
+        Filter filter = new LogingFilter(new FilterImpl());
         filter.setCost(Cost.COST2);
         filter.setBrand(Brand.HUAWEI);
         filter.setCapacity(Capacity.CAPACITY2);
-        Filtering.filterPhones(filter);
+        filtering.filterPhones(filter);
 
         Assert.assertTrue(FilterPage.getHuaweiP30LiteGAN().isDisplayed(), "Filter results are invalid!");
     }
