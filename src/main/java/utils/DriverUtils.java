@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class DriverUtils {
 
-    private static final long waitTimeoutInS = 100;
+    private static final long WAIT_TIMEOUT_IN_S = 100;
 
     static ThreadLocal<WebDriver> driver = Driver.getWebDriver();
 
@@ -26,11 +26,11 @@ public class DriverUtils {
     }
 
     public static void waitForPageLoad() {
-        jsWait(waitTimeoutInS, JavascriptWait.PAGE_LOAD);
+        jsWait(WAIT_TIMEOUT_IN_S, JavascriptWait.PAGE_LOAD);
     }
 
     public static void waitForAjax() {
-        jsWait(waitTimeoutInS, JavascriptWait.JQUERY_AJAX);
+        jsWait(WAIT_TIMEOUT_IN_S, JavascriptWait.JQUERY_AJAX);
     }
 
     private static void jsWait(long waitTimeout, JavascriptWait wait) {

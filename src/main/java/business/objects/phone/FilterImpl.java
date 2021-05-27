@@ -6,10 +6,6 @@ public class FilterImpl implements Filter {
     private Brand brand;
     private Capacity capacity;
 
-    public FilterImpl() {
-
-    }
-
     public Cost getCost() {
         return cost;
     }
